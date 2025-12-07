@@ -3,84 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily English Bite</title>
+    <title>The Daily Bite</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+
     <style>
-        :root { --primary: #58cc02; --text: #3c3c3c; --bg: #f7f7f7; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; line-height: 1.6; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        
-        /* Header */
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .date { font-size: 0.9em; color: #888; font-weight: bold; }
-        .counter { background: #fff5c2; padding: 5px 10px; border-radius: 20px; font-weight: bold; font-size: 0.9em; color: #ffa500; }
-        
-        /* Sections */
-        h2 { color: var(--primary); font-size: 1.4em; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 30px; }
-        .article-title { font-size: 1.8em; margin: 10px 0; line-height: 1.3; color: #222; }
-        
-        /* Vocab */
-        .vocab-item { background: #f0fbf0; padding: 10px; margin-bottom: 10px; border-radius: 8px; border-left: 4px solid var(--primary); }
-        .vocab-word { font-weight: bold; font-size: 1.1em; }
-        .vocab-meaning { color: #555; }
-        .vocab-ex { font-style: italic; color: #666; font-size: 0.9em; margin-top: 4px; display: block;}
+        :root {
+            --bg-paper: #F9F7F1; /* 미색 종이 컬러 */
+            --ink-primary: #2A2A2A; /* 진한 잉크색 */
+            --ink-secondary: #555555;
+            --accent-red: #8B0000; /* 신문 헤드라인 포인트 컬러 */
+            --accent-green: #2E7D32; /* 정답 컬러 (차분한 녹색) */
+            --border-style: 2px solid #2A2A2A;
+        }
 
-        /* Quiz */
-        .quiz-item { margin-bottom: 20px; }
-        .options button { display: block; width: 100%; padding: 10px; margin: 5px 0; border: 2px solid #eee; border-radius: 10px; background: white; cursor: pointer; text-align: left; transition: 0.2s; }
-        .options button:hover { background: #f9f9f9; }
-        .options button.correct { background: #dff6dd; border-color: var(--primary); color: var(--primary); font-weight: bold; }
-        .options button.wrong { background: #ffebeb; border-color: #ff4b4b; color: #ff4b4b; }
+        body {
+            font-family: 'Merriweather', serif; /* 본문용 세리프 폰트 */
+            background-color: #e6e2d8; /* 바디 배경은 조금 더 어둡게 */
+            color: var(--ink-primary);
+            margin: 0;
+            padding: 10px;
+            line-height: 1.8;
+            -webkit-font-smoothing: antialiased;
+        }
 
-        /* Loader */
-        #loader { text-align: center; padding: 50px; }
+        .paper-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--bg-paper);
+            padding: 20px 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-top: 5px solid var(--ink-primary); /* 신문 상단 굵은 줄 */
+        }
+
+        /* --- Newspaper Header (Masthead) --- */
+        header {
+            text-align: center;
+            border-bottom: 3px double var(--ink-primary); /* 이중 밑줄 */
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .brand-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 0;
+            letter-spacing: -1px;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .meta-info {
+            margin-top: 10px;
+            font-family: sans-serif; /* 정보성 텍스트는 고딕 */
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--ink-secondary);
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #ccc;
+            padding-top: 5px;
+        }
+
+        .streak-badge {
+            font-weight: bold;
+            color: var(--accent-red);
+        }
+
+        /* --- Loader --- */
+        #loader {
+            text-align: center;
+            padding: 60px 20px;
+            font-family: sans-serif;
+            color: var(--ink-secondary);
+        }
+
+        /* --- Article Typography --- */
+        h1.article-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            line-height: 1.2;
+            margin: 0 0 20px 0;
+            text-align: left;
+            font-weight: 700;
+        }
+
+        h2.section-header {
+            font-family: sans-serif;
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--ink-primary);
+            margin: 40px 0 15px 0;
+            padding-bottom: 5px;
+            color: var(--ink-secondary);
+        }
+
+        #article-text {
+            font-size: 1.125rem; /* 18px 모바일 가독성 최적화 */
+            text-align: justify; /* 양쪽 정렬 */
+            word-break: keep-all;
+        }
+        
+        /* 첫 글자 크게 (Drop Cap) */
+        #article-text::first-letter {
+            float: left;
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            line-height: 0.8;
+            padding-right: 8px;
+            padding-left: 2px;
+            font-weight: bold;
+            color: var(--accent-red);
+        }
+
+        /* --- Vocabulary Box --- */
+        .vocab-section {
+            background-color: #ECEBE4; /* 옅은 회색 박스 */
+            padding: 15px;
+            border: 1px solid #ccc;
+            margin-bottom: 30px;
+        }
+
+        .vocab-item {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px dotted #bbb;
+        }
+        .vocab-item:last-child { border-bottom: none; margin-bottom: 0; }
+
+        .vocab-word {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--accent-red);
+            font-family: sans-serif;
+        }
+
+        .vocab-meaning { font-weight: bold; }
+        .vocab-ex { 
+            display: block; 
+            margin-top: 4px; 
+            font-style: italic; 
+            color: var(--ink-secondary); 
+            font-size: 0.95rem;
+        }
+
+        /* --- Quiz Section --- */
+        .quiz-item { margin-bottom: 30px; }
+        .quiz-question { 
+            font-weight: bold; 
+            font-size: 1.1rem; 
+            margin-bottom: 10px; 
+        }
+
+        .options button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin: 8px 0;
+            background: transparent;
+            border: 1px solid #999;
+            font-family: sans-serif;
+            font-size: 1rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--ink-primary);
+        }
+
+        .options button:active { background: #e0e0e0; }
+        
+        /* 정답/오답 스타일 */
+        .options button.correct {
+            background-color: var(--accent-green);
+            color: white;
+            border-color: var(--accent-green);
+            font-weight: bold;
+        }
+        .options button.wrong {
+            background-color: var(--accent-red);
+            color: white;
+            border-color: var(--accent-red);
+            text-decoration: line-through;
+        }
+
+        /* --- Complete Message --- */
+        #complete-msg {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border: 2px solid var(--ink-primary);
+            display: none;
+        }
+        .stamp {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--accent-red);
+            transform: rotate(-5deg);
+            display: inline-block;
+            border: 3px double var(--accent-red);
+            padding: 5px 15px;
+            margin-bottom: 10px;
+        }
+
         .hidden { display: none; }
-        
-        /* Complete Message */
-        #complete-msg { text-align: center; margin-top: 30px; display: none; }
-        .success-stamp { font-size: 3em; animation: pop 0.5s ease; }
-        @keyframes pop { 0% { transform: scale(0); } 80% { transform: scale(1.2); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="paper-container">
     <header>
-        <div class="date" id="date-display">Loading...</div>
-        <div class="counter">🏆 <span id="streak-count">-</span></div>
+        <div class="brand-title">The Daily Bite</div>
+        <div class="meta-info">
+            <span id="date-display">Date Loading...</span>
+            <span class="streak-badge">Vol. <span id="streak-count">-</span></span>
+        </div>
     </header>
 
-    <div id="loader">오늘의 뉴스를 불러오는 중... 🗞️</div>
+    <div id="loader">
+        <p>Fetching today's headlines...</p>
+        <p style="font-size:0.8em">📰 인쇄소를 가동 중입니다...</p>
+    </div>
 
     <div id="content" class="hidden">
-        <h1 class="article-title" id="title"></h1>
         
-        <h2>💡 Vocabulary</h2>
-        <div id="vocab-list"></div>
+        <h1 class="article-headline" id="title"></h1>
+        
+        <h2 class="section-header">Words of the Day</h2>
+        <div class="vocab-section" id="vocab-list"></div>
 
-        <h2>📖 Article</h2>
+        <h2 class="section-header">Today's Article</h2>
         <div id="article-text"></div>
 
-        <h2>✅ Quiz</h2>
+        <h2 class="section-header">Daily Crosscheck</h2>
         <div id="quiz-list"></div>
         
         <div id="complete-msg">
-            <div class="success-stamp">🎉</div>
-            <h3>Great Job!</h3>
-            <p>오늘의 학습을 완료했습니다.</p>
+            <div class="stamp">COMPLETED</div>
+            <p style="font-family: sans-serif; font-size: 0.9rem;">오늘의 학습을 성공적으로 마쳤습니다.</p>
         </div>
     </div>
 </div>
 
 <script>
     // **********************************************
-    // 여기에 복사한 GAS 웹 앱 URL을 넣으세요
+    // 여기에 복사한 GAS 웹 앱 URL을 넣으세요 (기존 URL 유지)
     // **********************************************
     const GAS_URL = "https://script.google.com/macros/s/AKfycby1UzmkbUKf0ZPBW1KmcHfeej9IoXxeEMdzNJyexBnfizqZTI0-8qUPH_oUeBlVChY/exec"; 
 
     let quizData = [];
     let correctCount = 0;
 
-    // 1. 데이터 로드
     async function loadContent() {
         try {
             const res = await fetch(`${GAS_URL}?action=getContent`);
@@ -92,36 +268,35 @@
             }
 
             render(json.content);
-            document.getElementById('streak-count').innerText = json.count;
+            document.getElementById('streak-count').innerText = json.count; // "Vol." 뒤에 붙음
             document.getElementById('loader').classList.add('hidden');
             document.getElementById('content').classList.remove('hidden');
 
         } catch (e) {
-            document.getElementById('loader').innerText = "데이터를 불러오는데 실패했습니다.";
+            document.getElementById('loader').innerText = "배달 사고가 났습니다. (데이터 로드 실패)";
             console.error(e);
         }
     }
 
-    // 2. 화면 렌더링
     function render(data) {
         document.getElementById('date-display').innerText = data.date;
         document.getElementById('title').innerText = data.headline;
         document.getElementById('article-text').innerHTML = data.article.replace(/\n/g, '<br><br>');
 
-        // 단어
         const vocabContainer = document.getElementById('vocab-list');
+        vocabContainer.innerHTML = ''; // 초기화
         data.vocab.forEach(v => {
             vocabContainer.innerHTML += `
                 <div class="vocab-item">
                     <span class="vocab-word">${v.word}</span>
-                    <span class="vocab-meaning"> - ${v.meaning}</span>
+                    <span class="vocab-meaning">: ${v.meaning}</span>
                     <span class="vocab-ex">"${v.example}"</span>
                 </div>`;
         });
 
-        // 퀴즈
         quizData = data.quiz;
         const quizContainer = document.getElementById('quiz-list');
+        quizContainer.innerHTML = ''; // 초기화
         quizData.forEach((q, idx) => {
             let optionsHtml = '';
             q.options.forEach((opt, optIdx) => {
@@ -130,19 +305,17 @@
             
             quizContainer.innerHTML += `
                 <div class="quiz-item" id="q-${idx}">
-                    <p><strong>Q${idx + 1}.</strong> ${q.question}</p>
+                    <div class="quiz-question">Q${idx + 1}. ${q.question}</div>
                     <div class="options">${optionsHtml}</div>
                 </div>`;
         });
     }
 
-    // 3. 정답 확인
     function checkAnswer(btn, qIdx, selectedOpt) {
         const parent = btn.parentElement;
         const buttons = parent.querySelectorAll('button');
         const correctAnswer = quizData[qIdx].answer;
 
-        // 이미 푼 문제는 클릭 방지
         if (parent.dataset.answered) return;
         parent.dataset.answered = "true";
 
@@ -151,21 +324,20 @@
             correctCount++;
         } else {
             btn.classList.add('wrong');
-            buttons[correctAnswer].classList.add('correct'); // 정답 보여주기
+            buttons[correctAnswer].classList.add('correct');
         }
 
-        // 모든 문제를 풀었는지 확인
         const answeredCount = document.querySelectorAll('.options[data-answered="true"]').length;
         if (answeredCount === quizData.length) {
             finishStudy();
         }
     }
 
-    // 4. 학습 완료 처리
     async function finishStudy() {
         document.getElementById('complete-msg').style.display = 'block';
-        
-        // 서버에 카운트 증가 요청
+        // 스크롤을 맨 아래로 부드럽게 이동
+        document.getElementById('complete-msg').scrollIntoView({ behavior: 'smooth' });
+
         try {
             const res = await fetch(`${GAS_URL}?action=markComplete`);
             const json = await res.json();
@@ -173,11 +345,10 @@
                 document.getElementById('streak-count').innerText = json.count;
             }
         } catch (e) {
-            console.error("카운트 업데이트 실패", e);
+            console.error("발행 부수 기록 실패", e);
         }
     }
 
-    // 시작
     loadContent();
 </script>
 
