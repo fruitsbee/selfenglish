@@ -10,17 +10,16 @@
 
     <style>
         :root {
-            --bg-paper: #F9F7F1; /* 미색 종이 컬러 */
-            --ink-primary: #2A2A2A; /* 진한 잉크색 */
+            --bg-paper: #F9F7F1;
+            --ink-primary: #2A2A2A;
             --ink-secondary: #555555;
-            --accent-red: #8B0000; /* 신문 헤드라인 포인트 컬러 */
-            --accent-green: #2E7D32; /* 정답 컬러 (차분한 녹색) */
-            --border-style: 2px solid #2A2A2A;
+            --accent-red: #8B0000;
+            --accent-green: #2E7D32;
         }
 
         body {
-            font-family: 'Merriweather', serif; /* 본문용 세리프 폰트 */
-            background-color: #e6e2d8; /* 바디 배경은 조금 더 어둡게 */
+            font-family: 'Merriweather', serif;
+            background-color: #e6e2d8;
             color: var(--ink-primary);
             margin: 0;
             padding: 10px;
@@ -34,13 +33,14 @@
             background: var(--bg-paper);
             padding: 20px 25px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border-top: 5px solid var(--ink-primary); /* 신문 상단 굵은 줄 */
+            border-top: 5px solid var(--ink-primary);
+            min-height: 90vh; /* 컨텐츠 없을 때도 종이 느낌 유지 */
         }
 
-        /* --- Newspaper Header (Masthead) --- */
+        /* --- Header --- */
         header {
             text-align: center;
-            border-bottom: 3px double var(--ink-primary); /* 이중 밑줄 */
+            border-bottom: 3px double var(--ink-primary);
             padding-bottom: 15px;
             margin-bottom: 25px;
         }
@@ -57,7 +57,7 @@
 
         .meta-info {
             margin-top: 10px;
-            font-family: sans-serif; /* 정보성 텍스트는 고딕 */
+            font-family: sans-serif;
             font-size: 0.8rem;
             text-transform: uppercase;
             color: var(--ink-secondary);
@@ -67,26 +67,35 @@
             padding-top: 5px;
         }
 
-        .streak-badge {
-            font-weight: bold;
-            color: var(--accent-red);
-        }
+        .streak-badge { font-weight: bold; color: var(--accent-red); }
 
-        /* --- Loader --- */
-        #loader {
-            text-align: center;
-            padding: 60px 20px;
+        /* --- TTS Button (New) --- */
+        .tts-btn {
+            background: none;
+            border: 2px solid var(--ink-primary);
             font-family: sans-serif;
-            color: var(--ink-secondary);
+            font-size: 0.85rem;
+            font-weight: bold;
+            padding: 5px 12px;
+            cursor: pointer;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+            margin-bottom: 15px; /* 제목과 간격 */
         }
+        .tts-btn:hover { background: var(--ink-primary); color: white; }
+        .tts-btn.speaking { background: var(--accent-red); color: white; border-color: var(--accent-red); animation: pulse 1.5s infinite; }
+        
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
-        /* --- Article Typography --- */
+        /* --- Content --- */
         h1.article-headline {
             font-family: 'Playfair Display', serif;
             font-size: 2rem;
             line-height: 1.2;
-            margin: 0 0 20px 0;
-            text-align: left;
+            margin: 0 0 10px 0;
             font-weight: 700;
         }
 
@@ -102,13 +111,7 @@
             color: var(--ink-secondary);
         }
 
-        #article-text {
-            font-size: 1.125rem; /* 18px 모바일 가독성 최적화 */
-            text-align: justify; /* 양쪽 정렬 */
-            word-break: keep-all;
-        }
-        
-        /* 첫 글자 크게 (Drop Cap) */
+        #article-text { font-size: 1.125rem; text-align: justify; word-break: keep-all; }
         #article-text::first-letter {
             float: left;
             font-family: 'Playfair Display', serif;
@@ -120,95 +123,31 @@
             color: var(--accent-red);
         }
 
-        /* --- Vocabulary Box --- */
-        .vocab-section {
-            background-color: #ECEBE4; /* 옅은 회색 박스 */
-            padding: 15px;
-            border: 1px solid #ccc;
-            margin-bottom: 30px;
-        }
-
-        .vocab-item {
-            margin-bottom: 12px;
-            padding-bottom: 12px;
-            border-bottom: 1px dotted #bbb;
-        }
+        /* --- Vocab & Quiz --- */
+        .vocab-section { background-color: #ECEBE4; padding: 15px; border: 1px solid #ccc; margin-bottom: 30px; }
+        .vocab-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dotted #bbb; }
         .vocab-item:last-child { border-bottom: none; margin-bottom: 0; }
+        .vocab-word { font-weight: bold; font-size: 1.1rem; color: var(--accent-red); font-family: sans-serif; }
+        .vocab-ex { display: block; margin-top: 4px; font-style: italic; color: var(--ink-secondary); font-size: 0.95rem; }
 
-        .vocab-word {
-            font-weight: bold;
-            font-size: 1.1rem;
-            color: var(--accent-red);
-            font-family: sans-serif;
-        }
-
-        .vocab-meaning { font-weight: bold; }
-        .vocab-ex { 
-            display: block; 
-            margin-top: 4px; 
-            font-style: italic; 
-            color: var(--ink-secondary); 
-            font-size: 0.95rem;
-        }
-
-        /* --- Quiz Section --- */
         .quiz-item { margin-bottom: 30px; }
-        .quiz-question { 
-            font-weight: bold; 
-            font-size: 1.1rem; 
-            margin-bottom: 10px; 
-        }
-
+        .quiz-question { font-weight: bold; font-size: 1.1rem; margin-bottom: 10px; }
         .options button {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            margin: 8px 0;
-            background: transparent;
-            border: 1px solid #999;
-            font-family: sans-serif;
-            font-size: 1rem;
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: var(--ink-primary);
+            display: block; width: 100%; padding: 14px; margin: 8px 0;
+            background: transparent; border: 1px solid #999;
+            font-family: sans-serif; font-size: 1rem; text-align: left;
+            cursor: pointer; transition: all 0.2s; color: var(--ink-primary);
         }
+        .options button.correct { background-color: var(--accent-green); color: white; border-color: var(--accent-green); font-weight: bold; }
+        .options button.wrong { background-color: var(--accent-red); color: white; border-color: var(--accent-red); text-decoration: line-through; }
 
-        .options button:active { background: #e0e0e0; }
-        
-        /* 정답/오답 스타일 */
-        .options button.correct {
-            background-color: var(--accent-green);
-            color: white;
-            border-color: var(--accent-green);
-            font-weight: bold;
-        }
-        .options button.wrong {
-            background-color: var(--accent-red);
-            color: white;
-            border-color: var(--accent-red);
-            text-decoration: line-through;
-        }
-
-        /* --- Complete Message --- */
-        #complete-msg {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            border: 2px solid var(--ink-primary);
-            display: none;
-        }
+        #complete-msg { text-align: center; margin-top: 40px; padding: 20px; border: 2px solid var(--ink-primary); display: none; }
         .stamp {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            color: var(--accent-red);
-            transform: rotate(-5deg);
-            display: inline-block;
-            border: 3px double var(--accent-red);
-            padding: 5px 15px;
-            margin-bottom: 10px;
+            font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--accent-red);
+            transform: rotate(-5deg); display: inline-block; border: 3px double var(--accent-red);
+            padding: 5px 15px; margin-bottom: 10px;
         }
-
+        #loader { text-align: center; padding: 60px 20px; font-family: sans-serif; color: var(--ink-secondary); }
         .hidden { display: none; }
     </style>
 </head>
@@ -229,9 +168,12 @@
     </div>
 
     <div id="content" class="hidden">
-        
         <h1 class="article-headline" id="title"></h1>
         
+        <button id="tts-btn" class="tts-btn" onclick="toggleSpeech()">
+            <span id="tts-icon">🔊</span> <span id="tts-text">Listen to Article</span>
+        </button>
+
         <h2 class="section-header">Words of the Day</h2>
         <div class="vocab-section" id="vocab-list"></div>
 
@@ -250,12 +192,15 @@
 
 <script>
     // **********************************************
-    // 여기에 복사한 GAS 웹 앱 URL을 넣으세요 (기존 URL 유지)
+    // 여기에 복사한 GAS 웹 앱 URL을 넣으세요
     // **********************************************
     const GAS_URL = "https://script.google.com/macros/s/AKfycby1UzmkbUKf0ZPBW1KmcHfeej9IoXxeEMdzNJyexBnfizqZTI0-8qUPH_oUeBlVChY/exec"; 
 
     let quizData = [];
     let correctCount = 0;
+    let isSpeaking = false;
+    let synth = window.speechSynthesis;
+    let utterance = null;
 
     async function loadContent() {
         try {
@@ -268,7 +213,7 @@
             }
 
             render(json.content);
-            document.getElementById('streak-count').innerText = json.count; // "Vol." 뒤에 붙음
+            document.getElementById('streak-count').innerText = json.count;
             document.getElementById('loader').classList.add('hidden');
             document.getElementById('content').classList.remove('hidden');
 
@@ -284,7 +229,7 @@
         document.getElementById('article-text').innerHTML = data.article.replace(/\n/g, '<br><br>');
 
         const vocabContainer = document.getElementById('vocab-list');
-        vocabContainer.innerHTML = ''; // 초기화
+        vocabContainer.innerHTML = '';
         data.vocab.forEach(v => {
             vocabContainer.innerHTML += `
                 <div class="vocab-item">
@@ -296,7 +241,7 @@
 
         quizData = data.quiz;
         const quizContainer = document.getElementById('quiz-list');
-        quizContainer.innerHTML = ''; // 초기화
+        quizContainer.innerHTML = '';
         quizData.forEach((q, idx) => {
             let optionsHtml = '';
             q.options.forEach((opt, optIdx) => {
@@ -310,6 +255,49 @@
                 </div>`;
         });
     }
+
+    // --- TTS Functionality ---
+    function toggleSpeech() {
+        const btn = document.getElementById('tts-btn');
+        const icon = document.getElementById('tts-icon');
+        const textLabel = document.getElementById('tts-text');
+
+        if (isSpeaking) {
+            // Stop speaking
+            synth.cancel();
+            isSpeaking = false;
+            btn.classList.remove('speaking');
+            icon.innerText = "🔊";
+            textLabel.innerText = "Listen to Article";
+        } else {
+            // Start speaking
+            // HTML 태그 제거하고 순수 텍스트만 가져오기
+            const articleText = document.getElementById('article-text').innerText;
+            
+            utterance = new SpeechSynthesisUtterance(articleText);
+            utterance.lang = 'en-US'; // 영어로 설정
+            utterance.rate = 0.9; // 속도 (1.0이 기본, 0.9는 약간 천천히)
+            
+            // 말하기 끝났을 때 처리
+            utterance.onend = function() {
+                isSpeaking = false;
+                btn.classList.remove('speaking');
+                icon.innerText = "🔊";
+                textLabel.innerText = "Listen to Article";
+            };
+
+            synth.speak(utterance);
+            isSpeaking = true;
+            btn.classList.add('speaking');
+            icon.innerText = "⏹";
+            textLabel.innerText = "Stop Listening";
+        }
+    }
+
+    // 페이지 벗어날 때 말하기 중단
+    window.onbeforeunload = function() {
+        synth.cancel();
+    };
 
     function checkAnswer(btn, qIdx, selectedOpt) {
         const parent = btn.parentElement;
@@ -335,7 +323,6 @@
 
     async function finishStudy() {
         document.getElementById('complete-msg').style.display = 'block';
-        // 스크롤을 맨 아래로 부드럽게 이동
         document.getElementById('complete-msg').scrollIntoView({ behavior: 'smooth' });
 
         try {
